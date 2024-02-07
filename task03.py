@@ -3,17 +3,22 @@ import heapq
 
 class Dijkstra_heap_Graph(nx.Graph):
     def dijkstra(self, start_node_name):
+        # Створюється набір вершин, який буде зберігати вершини, відстань до яких вже відома
+        # С початку, усім вершинам, крім початкової, призначається значення нескінченності, а початковій — 0.
         distances = {vertex: float('infinity') for vertex in self}
         distances[start_node_name] = 0
 
         heap_queue = [(0, start_node_name)]   # Початкова точка відліку відстаней
 
-        while len(heap_queue) > 0:
+        while len(heap_queue) > 0:  # Якщо всі вершини оброблено або відстань до них відома, алгоритм завершується.
+            # Обирається вершина з набору з найменшою відстанню
             current_node = heapq.heappop(heap_queue)
             if current_node[0] > distances[current_node[1]]:
                 continue
             #print(current_node[0], current_node[1],self.edges.data('weight', nbunch=[current_node[1]]))
             for _, neighbor, weight in self.edges.data('weight', nbunch=[current_node[1]]):
+                # Оновлюються відстані до сусідніх вершин, якщо поточна відстань до вершини плюс вага ребра 
+                # менша за поточне значення відстані
                 distance = current_node[0] + weight
                 if distance < distances[neighbor]:
                     distances[neighbor] = distance
@@ -61,10 +66,10 @@ def main():
     shortest_distances = G.dijkstra(city)
 
     print(f'Найкоротший шлях між вершиною {city} та іншими вершинами графу')
-    print('|       Город       | Найкоротший шлях, км   |')
-    print('|-------------------|------------------------|')
+    print('|    Город     | Найкоротший шлях, км  |')
+    print('|--------------|-----------------------|')
     for city_name, dist in shortest_distances.items():
-        print(f'| {city_name:17} | {dist:^22} |')
+        print(f'| {city_name:12} | {dist:>21} |')
 
 if __name__ == '__main__':
     main()
